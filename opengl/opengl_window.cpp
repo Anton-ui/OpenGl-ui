@@ -8,92 +8,7 @@ opengl_window::opengl_window()
     font_selected = QFont("Times New Roman", 25);
     font_selected.setBold(true);
 
-    // Заполнение полей настроек
-    // Page 1
-    page1.vector_page_key.resize(3);
-    page1.vector_page_key[0] = "Вкл/Выкл";
-    page1.vector_page_key[1] = "Формат";
-    page1.vector_page_key[2] = "Сжатие";
-
-    page1.vector_page_value.resize(3);
-
-    page1.vector_page_value[0].resize(2);
-    page1.vector_page_value[0][0] = "Вкл";
-    page1.vector_page_value[0][1] = "Выкл";
-
-    page1.vector_page_value[1].resize(2);
-    page1.vector_page_value[1][0] = "Цветной";
-    page1.vector_page_value[1][1] = "Черно-белый";
-
-    page1.vector_page_value[2].resize(3);
-    page1.vector_page_value[2][0] = "0%";
-    page1.vector_page_value[2][1] = "30%";
-    page1.vector_page_value[2][2] = "50%";
-
-    // Page 2
-    page2.vector_page_key.resize(3);
-    page2.vector_page_key[0] = "Вкл/Выкл";
-    page2.vector_page_key[1] = "Формат";
-    page2.vector_page_key[2] = "Сжатие";
-
-    page2.vector_page_value.resize(3);
-
-    page2.vector_page_value[0].resize(2);
-    page2.vector_page_value[0][0] = "Вкл";
-    page2.vector_page_value[0][1] = "Выкл";
-
-    page2.vector_page_value[1].resize(2);
-    page2.vector_page_value[1][0] = "Цветной";
-    page2.vector_page_value[1][1] = "Черно-белый";
-
-    page2.vector_page_value[2].resize(3);
-    page2.vector_page_value[2][0] = "0%";
-    page2.vector_page_value[2][1] = "30%";
-    page2.vector_page_value[2][2] = "50%";
-
-    // Page 3
-    page3.vector_page_key.resize(2);
-    page3.vector_page_key[0] = "Вкл/Выкл";
-    page3.vector_page_key[1] = "Диапазон";
-
-    page3.vector_page_value.resize(2);
-
-    page3.vector_page_value[0].resize(2);
-    page3.vector_page_value[0][0] = "Вкл";
-    page3.vector_page_value[0][1] = "Выкл";
-
-    page3.vector_page_value[1].resize(3);
-    page3.vector_page_value[1][0] = "0.01-0.05 МэВ";
-    page3.vector_page_value[1][1] = "0.05-0.1 МэВ";
-    page3.vector_page_value[1][2] = ">0.1 МэВ";
-
-    // Page 4
-    page4.vector_page_key.resize(4);
-    page4.vector_page_key[0] = "Вкл/Выкл";
-    page4.vector_page_key[1] = "Диапазон";
-    page4.vector_page_key[2] = "Приближение";
-    page4.vector_page_key[3] = "Угол";
-
-    page4.vector_page_value.resize(4);
-
-    page4.vector_page_value[0].resize(2);
-    page4.vector_page_value[0][0] = "Вкл";
-    page4.vector_page_value[0][1] = "Выкл";
-
-    page4.vector_page_value[1].resize(3);
-    page4.vector_page_value[1][0] = "0.01-0.05 МэВ";
-    page4.vector_page_value[1][1] = "0.05-0.1 МэВ";
-    page4.vector_page_value[1][2] = ">0.1 МэВ";
-
-    page4.vector_page_value[2].resize(3);
-    page4.vector_page_value[2][0] = "Нет";
-    page4.vector_page_value[2][1] = "х2";
-    page4.vector_page_value[2][2] = "х4";
-
-    page4.vector_page_value[3].resize(3);
-    page4.vector_page_value[3][0] = "0";
-    page4.vector_page_value[3][1] = "15";
-    page4.vector_page_value[3][2] = "30";
+    initialize_page_data();
 
     // Заполнение переменной состояния
     STATE_LIST.resize(4);
@@ -103,49 +18,35 @@ opengl_window::opengl_window()
     STATE_LIST[3] = false;
 
     state_list.resize(4);
-    state_list[0].resize(3);
+    state_list[0].resize(P1);
+    state_list[1].resize(P2);
+    state_list[2].resize(P3);
+    state_list[3].resize(P4);
+
     state_list[0][0] = true;
     state_list[0][1] = false;
     state_list[0][2] = false;
 
-    state_list[1].resize(3);
     state_list[1][0] = true;
     state_list[1][1] = false;
     state_list[1][2] = false;
 
-    state_list[2].resize(2);
     state_list[2][0] = true;
     state_list[2][1] = false;
 
-    state_list[3].resize(4);
     state_list[3][0] = true;
     state_list[3][1] = false;
     state_list[3][2] = false;
     state_list[3][3] = false;
 
-    // Создание вектора текущих настроек
+    // Создание векторов текущих настроек
+    page1.vector_page_settings.resize(P1);
+    page2.vector_page_settings.resize(P2);
+    page3.vector_page_settings.resize(P3);
+    page4.vector_page_settings.resize(P4);
 
-    //--------------------------
-    page1.vector_page_settings.resize(3);
-    page1.vector_page_settings[0] = page1.vector_page_value[0][0];
-    page1.vector_page_settings[1] = page1.vector_page_value[1][0];
-    page1.vector_page_settings[2] = page1.vector_page_value[2][0];
+    load();
 
-    page2.vector_page_settings.resize(3);
-    page2.vector_page_settings[0] = page2.vector_page_value[0][0];
-    page2.vector_page_settings[1] = page2.vector_page_value[1][0];
-    page2.vector_page_settings[2] = page2.vector_page_value[2][0];
-
-    page3.vector_page_settings.resize(2);
-    page3.vector_page_settings[0] = page3.vector_page_value[0][0];
-    page3.vector_page_settings[1] = page3.vector_page_value[1][0];
-
-    page4.vector_page_settings.resize(4);
-    page4.vector_page_settings[0] = page4.vector_page_value[0][0];
-    page4.vector_page_settings[1] = page4.vector_page_value[1][0];
-    page4.vector_page_settings[2] = page4.vector_page_value[2][0];
-    page4.vector_page_settings[3] = page4.vector_page_value[3][0];
-    //--------------------------
     vector_total.append(page1);
     vector_total.append(page2);
     vector_total.append(page3);
@@ -276,7 +177,100 @@ void opengl_window::keyReleaseEvent(QKeyEvent *apKeyEvent)
     updateGL();
     // Функция закрытия окна с сохранением измененных параметров
     if(apKeyEvent->key() == Qt::Key_Escape)
+    {
+        save();
         close();
+    }
+}
+
+void opengl_window::initialize_page_data()
+{
+    // Заполнение полей настроек
+    // Page 1
+    page1.vector_page_key.resize(P1);
+    page1.vector_page_key[0] = "Вкл/Выкл";
+    page1.vector_page_key[1] = "Формат";
+    page1.vector_page_key[2] = "Сжатие";
+
+    page1.vector_page_value.resize(P1);
+
+    page1.vector_page_value[0].resize(2);
+    page1.vector_page_value[0][0] = "Вкл";
+    page1.vector_page_value[0][1] = "Выкл";
+
+    page1.vector_page_value[1].resize(2);
+    page1.vector_page_value[1][0] = "Цветной";
+    page1.vector_page_value[1][1] = "Черно-белый";
+
+    page1.vector_page_value[2].resize(3);
+    page1.vector_page_value[2][0] = "0%";
+    page1.vector_page_value[2][1] = "30%";
+    page1.vector_page_value[2][2] = "50%";
+
+    // Page 2
+    page2.vector_page_key.resize(P2);
+    page2.vector_page_key[0] = "Вкл/Выкл";
+    page2.vector_page_key[1] = "Формат";
+    page2.vector_page_key[2] = "Сжатие";
+
+    page2.vector_page_value.resize(P2);
+
+    page2.vector_page_value[0].resize(2);
+    page2.vector_page_value[0][0] = "Вкл";
+    page2.vector_page_value[0][1] = "Выкл";
+
+    page2.vector_page_value[1].resize(2);
+    page2.vector_page_value[1][0] = "Цветной";
+    page2.vector_page_value[1][1] = "Черно-белый";
+
+    page2.vector_page_value[2].resize(3);
+    page2.vector_page_value[2][0] = "0%";
+    page2.vector_page_value[2][1] = "30%";
+    page2.vector_page_value[2][2] = "50%";
+
+    // Page 3
+    page3.vector_page_key.resize(P3);
+    page3.vector_page_key[0] = "Вкл/Выкл";
+    page3.vector_page_key[1] = "Диапазон";
+
+    page3.vector_page_value.resize(P3);
+
+    page3.vector_page_value[0].resize(2);
+    page3.vector_page_value[0][0] = "Вкл";
+    page3.vector_page_value[0][1] = "Выкл";
+
+    page3.vector_page_value[1].resize(3);
+    page3.vector_page_value[1][0] = "0.01-0.05 МэВ";
+    page3.vector_page_value[1][1] = "0.05-0.1 МэВ";
+    page3.vector_page_value[1][2] = ">0.1 МэВ";
+
+    // Page 4
+    page4.vector_page_key.resize(P4);
+    page4.vector_page_key[0] = "Вкл/Выкл";
+    page4.vector_page_key[1] = "Диапазон";
+    page4.vector_page_key[2] = "Приближение";
+    page4.vector_page_key[3] = "Угол";
+
+    page4.vector_page_value.resize(P4);
+
+    page4.vector_page_value[0].resize(2);
+    page4.vector_page_value[0][0] = "Вкл";
+    page4.vector_page_value[0][1] = "Выкл";
+
+    page4.vector_page_value[1].resize(3);
+    page4.vector_page_value[1][0] = "0.01-0.05 МэВ";
+    page4.vector_page_value[1][1] = "0.05-0.1 МэВ";
+    page4.vector_page_value[1][2] = ">0.1 МэВ";
+
+    page4.vector_page_value[2].resize(3);
+    page4.vector_page_value[2][0] = "Нет";
+    page4.vector_page_value[2][1] = "х2";
+    page4.vector_page_value[2][2] = "х4";
+
+    page4.vector_page_value[3].resize(3);
+    page4.vector_page_value[3][0] = "0";
+    page4.vector_page_value[3][1] = "15";
+    page4.vector_page_value[3][2] = "30";
 }
 
 void opengl_window::draw_start_process_pages()
@@ -407,12 +401,82 @@ void opengl_window::process_page4()
     }
 }
 
-void opengl_window::load(QVector<QString> vector_data)
+void opengl_window::load()
 {
+    QFile file("settings.txt");
+    if (file.exists())
+    {
+        if (file.open(QIODevice::ReadOnly))
+        {
+            QByteArray ar;
+            for (int i=0; i<page1.vector_page_settings.size(); i++)
+            {
+                ar = file.readLine();
+                page1.vector_page_settings[i] = QString(ar);
+                page1.vector_page_settings[i].chop(1);
+            }
+            for (int k=0; k<page2.vector_page_settings.size(); k++)
+            {
+                ar = file.readLine();
+                page2.vector_page_settings[k] = QString(ar);
+                page2.vector_page_settings[k].chop(1);
+            }
+            for (int j=0; j<page3.vector_page_settings.size(); j++)
+            {
+                ar = file.readLine();
+                page3.vector_page_settings[j] = QString(ar);
+                page3.vector_page_settings[j].chop(1);
+            }
+            for (int r=0; r<page4.vector_page_settings.size(); r++)
+            {
+                ar = file.readLine();
+                page4.vector_page_settings[r] = QString(ar);
+                page4.vector_page_settings[r].chop(1);
+            }
 
+            file.close();
+        }
+        else qDebug() << "File open error!";
+    }
+    else
+    {
+        for (int i=0; i<page1.vector_page_settings.size(); i++)
+            page1.vector_page_settings[i] = page1.vector_page_value[i][0];
+        for (int k=0; k<page2.vector_page_settings.size(); k++)
+            page2.vector_page_settings[k] = page2.vector_page_value[k][0];
+        for (int j=0; j<page3.vector_page_settings.size(); j++)
+            page3.vector_page_settings[j] = page3.vector_page_value[j][0];
+        for (int r=0; r<page4.vector_page_settings.size(); r++)
+            page4.vector_page_settings[r] = page4.vector_page_value[r][0];
+    }
 }
 
-void opengl_window::save(QVector<QString> vector_data)
+void opengl_window::save()
 {
-
+    QFile file("settings.txt");
+    if (file.open(QIODevice::WriteOnly))
+    {
+        for (int i=0; i<page1.vector_page_settings.size(); i++)
+        {
+            file.write(vector_total[0].vector_page_settings[i].toStdString().c_str());
+            file.write("\n");
+        }
+        for (int k=0; k<page2.vector_page_settings.size(); k++)
+        {
+            file.write(vector_total[1].vector_page_settings[k].toStdString().c_str());
+            file.write("\n");
+        }
+        for (int j=0; j<page3.vector_page_settings.size(); j++)
+        {
+            file.write(vector_total[2].vector_page_settings[j].toStdString().c_str());
+            file.write("\n");
+        }
+        for (int r=0; r<page4.vector_page_settings.size(); r++)
+        {
+            file.write(vector_total[3].vector_page_settings[r].toStdString().c_str());
+            file.write("\n");
+        }
+        file.close();
+    }
+    else qDebug() << "Save data error!";
 }

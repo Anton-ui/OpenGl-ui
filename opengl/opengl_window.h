@@ -5,11 +5,15 @@
 #include <QKeyEvent>
 #include <QDebug>
 
+#define P1 3
+#define P2 3
+#define P3 2
+#define P4 4
+
 struct vector_page
 {
     QVector<QString>          vector_page_key;
     QVector<QVector<QString>> vector_page_value;
-    QVector<QVector<bool>>    vector_page_bool;
     QVector<QString>          vector_page_settings;
 };
 
@@ -23,13 +27,14 @@ struct opengl_window : QGLWidget
     void keyReleaseEvent(QKeyEvent *) override;
 
 private:
+    void initialize_page_data();
     void draw_start_process_pages();
     void process_page1();
     void process_page2();
     void process_page3();
     void process_page4();
-    void load(QVector<QString> vector_data);
-    void save(QVector<QString> vector_data);
+    void load();
+    void save();
     vector_page page1;
     vector_page page2;
     vector_page page3;
