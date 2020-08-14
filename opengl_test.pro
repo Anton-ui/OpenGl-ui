@@ -25,7 +25,7 @@ HEADERS += \
 FORMS += \
     window.ui
 
-INCLUDEPATH += /usr/local/include \
+INCLUDEPATH += /usr/local/include/opencv4 \
                /opt/XIMEA/include \
 
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_videoio -lopencv_objdetect -lopencv_imgcodecs -lopencv_imgproc -lopencv_calib3d \

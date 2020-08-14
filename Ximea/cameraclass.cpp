@@ -37,7 +37,7 @@ void XimeaCamera::InitCamera(unsigned long in_cam_id, unsigned long in_cam_num)
     /////////////////////////////////////////////////////////////////
     /// Компрессия методами OpenCV
     /////////////////////////////////////////////////////////////////
-    compression_type = CV_IMWRITE_JPEG_QUALITY;
+    compression_type = cv::IMWRITE_JPEG_QUALITY;
     compression_value = controlData.compression;
     ChangeCompressionParams();
 }

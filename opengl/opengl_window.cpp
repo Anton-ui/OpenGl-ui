@@ -418,6 +418,8 @@ void opengl_window::process_page5()
     else
     {
         cv::flip(Image, Image, 0);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
         glGenTextures(1, &Texture1);
         glBindTexture(GL_TEXTURE_2D, Texture1);
 
@@ -426,19 +428,37 @@ void opengl_window::process_page5()
                     if (Image.channels() == 3) internalformat = GL_RGB;
                     if (Image.channels() == 2) internalformat = GL_RG;
                     if (Image.channels() == 1) internalformat = GL_RED;
-        GLenum externalformat = GL_BGR;
+        GLenum externalformat = GL_RGB;
                     if (Image.channels() == 1) externalformat = GL_RED; // GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT32F, GL_R32F NOT WORKING!
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, Image.cols, Image.rows, 0, externalformat, GL_SHORT, Image.ptr());
+        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, Image.cols, Image.rows, 0, externalformat, GL_UNSIGNED_BYTE, Image.ptr());
+ //       GLAPI void GLAPIENTRY glTexImage2D( GLenum target, GLint level,
+//                                            GLint internalFormat,
+ //                                           GLsizei width, GLsizei height,
+ //                                           GLint border, GLenum format, GLenum type,
+ //                                           const GLvoid *pixels );
         //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-        drawTexture(QRectF{float(x), float(y), float(x+740), float(y+440)}, Texture1);
-        }
+        //drawTexture(QRectF{float(x), float(y), float(x+740), float(y+440)}, Texture1);
+        drawTexture(QRect{x, y, x+740, y+440}, Texture1);
+
+    }
 }
+
+void opengl_window::TakePicture1(Mat InputImage)
+{
+    Image = InputImage;
+    cvtColor(Image,Image,COLOR_RGBA2RGB);
+
+    qDebug() << Image.depth() << Image.channels() << Image.type();
+    //Image = imread ("/home/camel212/Downloads/cup.png", cv::IMREAD_COLOR);
+
+}
+
 void opengl_window::load()
 {
     QFile file("settings.txt");
@@ -519,9 +539,3 @@ void opengl_window::save()
     else qDebug() << "Save data error!";
 }
 
-void opengl_window::TakePicture1(Mat InputImage)
-{
-    //Image = InputImage;
-    Image = imread ("/home/camel212/Downloads/cup.png", CV_LOAD_IMAGE_COLOR);
-
-}

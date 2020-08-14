@@ -1,147 +1,6 @@
 
 
 //-------------------------------------------------------------------------------------------------------------------
-// xiApi Extension header file
-
-// Generated for xiAPI version 4.17.35
-
-#ifndef __XIAPIEXT_H
-#define __XIAPIEXT_H
-
-//-------------------------------------------------------------------------------------------------------------------
-// xiApiExtended parameters
-
-#define  XI_PRM_SENSOR_LINE_PERIOD              "sensor_line_period"      // Image sensor line period in us 
-#define  XI_PRM_LENS_COMM_DATA                  "lens_comm_data"          // Write/Read data sequences to/from lens 
-#define  XI_PRM_DEVICE_ID                       "device_id"               // Return unique device ID 
-#define  XI_PRM_IMAGE_CORRECTION_SELECTOR       "image_correction_selector"// Select image correction function XI_IMAGE_CORRECTION_SELECTOR
-#define  XI_PRM_IMAGE_CORRECTION_VALUE          "image_correction_value"  // Select image correction selected function value 
-#define  XI_PRM_CAM_ENUM_GOLDEN_ENABLED         "cam_enum_golden_enabled" // Enable enumeration of golden devices 
-#define  XI_PRM_RESET_USB_IF_BOOTLOADER         "reset_usb_if_bootloader" // Resets USB device if started as bootloader 
-#define  XI_PRM_CAM_SIMULATORS_COUNT            "cam_simulators_count"    // Number of camera simulators to be available. 
-#define  XI_PRM_CAM_SENSOR_INIT_DISABLED        "cam_sensor_init_disabled"// Camera sensor will not be initialized when 1=XI_ON is set. 
-#define  XI_PRM_PROC_ENGINE                     "proc_engine"             // Set processing engine XI_PROC_ENGINE
-#define  XI_PRM_EXTENDED_FEATURE_SELECTOR       "ext_feature_selector"    // Selection of extended feature. XI_EXT_FEATURE_SELECTOR
-#define  XI_PRM_EXTENDED_FEATURE                "ext_feature"             // Extended feature value. 
-#define  XI_PRM_DEVICE_UNIT_SELECTOR            "device_unit_selector"    // Selects device unit. XI_DEVICE_UNIT_SELECTOR
-#define  XI_PRM_DEVICE_UNIT_REGISTER_SELECTOR   "device_unit_register_selector"// Selects register of selected device unit(XI_PRM_DEVICE_UNIT_SELECTOR). 
-#define  XI_PRM_DEVICE_UNIT_REGISTER_VALUE      "device_unit_register_value"// Sets/gets register value of selected device unit(XI_PRM_DEVICE_UNIT_SELECTOR). 
-#define  XI_PRM_API_PROGRESS_CALLBACK           "api_progress_callback"   // Callback address of pointer that is called upon long tasks (e.g. XI_PRM_WRITE_FILE_FFS). 
-
-
-//-------------------------------------------------------------------------------------------------------------------
-// defines
-#define XI_LIST_STATUS_GENERATED        0x0001  //Sensor defects list was generated
-#define XI_LIST_STATUS_UPTODATE         0x0002  //Sensor defects list is uptodate
-
-//-------------------------------------------------------------------------------------------------------------------
-// xiAPI enumerators
-// Selector of processing engine(instructions set)
-typedef enum
-{
-	XI_PE_ALL                    =0, // Use all available instrunctions
-	XI_PE_C                      =1, // Use C(C++) code
-	XI_PE_SSE2                   =3, // Use SSE2 instrunctions
-	XI_PE_AVX                    =4, // Use AVX instrunctions
-	XI_PE_AVX2                   =5, // Use AVX2 instrunctions
-	
-} XI_PROC_ENGINE;
-
-// Image correction function
-typedef enum
-{
-	XI_CORRECTION_TYPE_SELECTOR  =0, // Correction Type selected see XI_TYPE_CORRECTION_SELECTOR
-	XI_DEFECT_ID                 =1, // Select defect id
-	XI_DEFECTS_COUNT_BY_TYPE     =2, // Count of defects selected by current XI_DEFECT_TYPE
-	XI_DEFECT_TYPE               =3, // Type of defect see XI_IMAGE_DEFECT_TYPE
-	XI_DEFECT_SUB_TYPE           =4, // Defect sub type see XI_IMAGE_DEFECT_SUB_TYPE
-	XI_DEFECT_POS_X              =5, // Defect position x
-	XI_DEFECT_POS_Y              =6, // Defect position y
-	XI_DEFECT_CMD_ADD            =7, // Write cached defect to the list
-	XI_DEFECT_CMD_DELETE         =8, // Delete defect to the list
-	XI_DEFECT_CMD_APPLY_CHANGES  =9, // Apply changes
-	XI_DEFECT_CMD_LIST_CLEAR     =10, // Clear list
-	XI_DEFECT_CMD_LISTS_CLEAR    =11, // Clear lists
-	XI_DEFECT_CMD_SAVE           =12, // Save list to device
-	XI_CORRECTION_TYPE_ENABLED   =13, // Enable or disable correction type
-	XI_DEFECT_ID_BY_TYPE         =14, // Select defect id by type
-	XI_LIST_ID                   =15, // Select list id
-	XI_DEFECT_CMD_APPLY_CHANGES_ALL=16, // Apply changes to all lists
-	XI_LIST_STATUS               =17, // Current list status (Read-only). Result is mask of bits XI_LIST_STATUS_GENERATED, XI_LIST_STATUS_...
-	XI_IMG_COR_TAP_SELECTOR      =64, // Selected tap id (0-N) for image correction
-	XI_IMG_COR_GAIN_TUNE         =65, // Adjustment of gain in dB. For multitap sensors, active tap is selected by XI_IMG_COR_TAP_SELECTOR.
-	XI_IMG_COR_OFFSET_TUNE       =66, // Adjustment of pixel values offset. For multitap sensors, active tap is selected by XI_IMG_COR_TAP_SELECTOR.
-	
-} XI_IMAGE_CORRECTION_SELECTOR;
-
-// Define image  correction type
-typedef enum
-{
-	XI_CORR_TYPE_SENSOR_DEFECTS_FACTORY=0, // Factory defect list
-	XI_CORR_TYPE_SENSOR_COLUMN_FPN=1, // Select Fixed Pattern Noise Correction for Columns
-	XI_CORR_TYPE_SENSOR_ADC_BLO  =2, // ADC gain and black level offset sensor register correction
-	XI_CORR_TYPE_SENSOR_ROW_FPN  =3, // Select Fixed Pattern Noise Correction for Rows
-	XI_CORR_TYPE_SENSOR_DEFECTS_USER0=4, // User defect list
-	XI_CORR_TYPE_SENSOR_CHANNELS_TUNE=5, // Image channel/tap intensity correction
-	
-} XI_TYPE_CORRECTION_SELECTOR;
-
-// Define image defect types
-typedef enum
-{
-	XI_IMAGE_DEFECT_TYPE_PIXEL   =0, // Defect is pixel
-	XI_IMAGE_DEFECT_TYPE_COLUMN  =1, // Defect is column
-	XI_IMAGE_DEFECT_TYPE_ROW     =2, // Defect is row
-	
-} XI_IMAGE_DEFECT_TYPE;
-
-// Define image defect sub types
-typedef enum
-{
-	XI_IMAGE_DEFECT_SUB_TYPE_DARK=0, // Defect pixel(s) is(are) too dark
-	XI_IMAGE_DEFECT_SUB_TYPE_BRIGHT=1, // Defect pixel(s) is(are) out of range
-	XI_IMAGE_DEFECT_SUB_TYPE_HOT =2, // Defect pixel(s) is(are) too bright
-	
-} XI_IMAGE_DEFECT_SUB_TYPE;
-
-// Extended feature selector.
-typedef enum
-{
-	XI_EXT_FEATURE_SEL_SIMULATOR_GENERATOR_FRAME_LOST_PERIOD_MIN=1, // Camera simulator lost frame generation minimum period (in frames).
-	XI_EXT_FEATURE_SEL_SIMULATOR_GENERATOR_FRAME_LOST_PERIOD_MAX=2, // Camera simulator lost frame generation random period (in frames).
-	XI_EXT_FEATURE_SEL_SIMULATOR_IMAGE_DATA_FORMAT=3, // Camera simulator image data format.
-	XI_EXT_FEATURE_SEL_BANDWIDTH_MEASUREMENT_TIME_SECONDS=4, // Number of seconds for bandwidth measurement. Default = 1.
-	XI_EXT_FEATURE_SEL_IMAGE_INTENSIFIER_VOLTAGE=5, // Input voltage for image intensifier. Default = 0.
-	XI_EXT_FEATURE_SEL_TRIG_FRAME=6, // Triggers frame(s) on internal event. Default = 0.
-	XI_EXT_FEATURE_SEL_IMAGE_OVERSAMPLING=7, // Enable/disable image pixels oversampling. Default = 0.
-	XI_EXT_FEATURE_SEL_APPLY_DATA_FINAL=8, // Enable/disable applying data final. Default = 1.
-	XI_EXT_FEATURE_SEL_FAN_RPM   =9, // Sets camera cooling fan rpm (% from max). Default = 100.
-	XI_EXT_FEATURE_SEL_DITHERING_HOST=10, // Enables/Disables shifted(left/up) image data dithering on HOST side. Default = 0(off).
-	XI_EXT_FEATURE_SEL_DITHERING_DEVICE=11, // Enables/Disables shifted(left/up) image data dithering on DEVICE side. Default = 0(off).
-	XI_EXT_FEATURE_SEL_FAN_THR_TEMP=12, // Sets camera fan/back side threshold temperature. Default = 35.
-	
-} XI_EXT_FEATURE_SELECTOR;
-
-// Device unit selector
-typedef enum
-{
-	XI_DEVICE_UNIT_SENSOR1       =0, // Selects first sensor on device
-	XI_DEVICE_UNIT_FPGA1         =1, // Selects first FPGA on device
-	XI_DEVICE_UNIT_SAL           =2, // Selects sensor abstraction layer
-	XI_DEVICE_UNIT_DAL           =3, // Selects driver abstraction layer
-	XI_DEVICE_UNIT_SCM           =4, // Selects sensor correction module
-	XI_DEVICE_UNIT_FGENTL        =5, // Selects register in underlying GenTL layer
-	XI_DEVICE_UNIT_MCU1          =6, // Selects first MCU on device
-	XI_DEVICE_UNIT_MCU2          =7, // Selects second MCU on device
-	XI_DEVICE_UNIT_CHF           =8, // Selects Camera High Features Model
-	
-} XI_DEVICE_UNIT_SELECTOR;
-
-	
-#endif /* __XIAPIEXT_H */
-
-
-//-------------------------------------------------------------------------------------------------------------------
 // xiAPIplus header file - created from gen_xiAPIplus_h_file.xslt
 // XIMEA Application Programming Interface Object Oriented Approach
 //-------------------------------------------------------------------------------------------------------------------
@@ -149,20 +8,19 @@ typedef enum
 #pragma once
 
 #ifdef WIN32
-#ifdef WIN32
-#include "xiApi.h"
-#else
-#include <m3api/xiApi.h> // Linux, OSX
+#ifdef WIN32 
+#include "xiApi.h" 
+#else 
+#include <m3api/xiApi.h> // Linux, OSX 
 #endif       // Windows
 #else
 #include <m3api/xiApi.h> // Linux, OSX
 #endif
- 
-//#include <xiExt.h>
 
 #include <stdio.h>
 #include <opencv2/core.hpp> 
 #include <opencv2/highgui/highgui.hpp>
+#include <stdint.h>
 
 // debug support
 #define DBFIN  "xAPIp:"
@@ -179,8 +37,6 @@ class xiAPIplus
 {
 public:
 	unsigned long GetNumberOfConnectedCameras();
- 
-	void EnableCamEnumGoldenEnabled();
 
 };
 
@@ -232,12 +88,12 @@ public:
 	// functions
 	XI_IMG_FORMAT GetDataFormat() {return image.frm;}
 	unsigned char* GetPixels() {return (unsigned char*)image.bp;}
+	float* GetPixelsFloat() { return (float*)image.bp; }
 	int GetWidth() {return image.width;}
 	int GetHeight() {return image.height;}
 	int GetPadding_X();
 	XI_IMG* GetXI_IMG();
 	int GetBytesPerPixel();
-	int GetTotalPixelValues();
 	int GetFrameNumber(){ return image.nframe;};
 	int GetPixelsArraySize() {return ((image.width + GetPadding_X()) * image.height * GetBytesPerPixel());}
 	int GetBitCount();
@@ -265,11 +121,11 @@ public:
 
 	// open/close
 	void OpenFirst();
-	void OpenByID(unsigned long id);
-	void OpenBySN(char* serial_number);
-	void OpenByPath(char* device_path);
-	void OpenByUserID(char* user_id);
-	void OpenByLocation(char* location);
+	void OpenByID(const unsigned long id);
+	void OpenBySN(const char* serial_number);
+	void OpenByPath(const char* device_path);
+	void OpenByUserID(const char* user_id);
+	void OpenByLocation(const char* location);
 	void Close();
 
 	// debug
@@ -316,14 +172,22 @@ public:
 	 
 	// Exposure time in microseconds (XI_PRM_EXPOSURE)
 	
-	int GetExposureTime();
-	int GetExposureTime_Maximum();
-	int GetExposureTime_Minimum();
-	int GetExposureTime_Increment();
-	void SetExposureTime(int ExposureTime);
+	float GetExposureTime();
+	float GetExposureTime_Maximum();
+	float GetExposureTime_Minimum();
+	float GetExposureTime_Increment();
+	
+	void SetExposureTime(float ExposureTime);
+	 
+	// Selector for Exposure parameter (XI_PRM_EXPOSURE_TIME_SELECTOR)
+	XI_EXPOSURE_TIME_SELECTOR_TYPE GetExposureTimeSelector();
+	XI_EXPOSURE_TIME_SELECTOR_TYPE GetExposureTimeSelector_Maximum();
+	XI_EXPOSURE_TIME_SELECTOR_TYPE GetExposureTimeSelector_Minimum();
+	int GetExposureTimeSelector_Increment();
+	
+	void SetExposureTimeSelector(XI_EXPOSURE_TIME_SELECTOR_TYPE ExposureTimeSelector);
 	 
 	// Sets the number of times of exposure in one frame. (XI_PRM_EXPOSURE_BURST_COUNT)
-	
 	int GetExposureBurstCount();
 	int GetExposureBurstCount_Maximum();
 	int GetExposureBurstCount_Minimum();
@@ -363,7 +227,7 @@ public:
 	
 	void SetDownsamplingType(XI_DOWNSAMPLING_TYPE DownsamplingType);
 	 
-	// Selects which test pattern generator is controlled by the TestPattern feature. (XI_PRM_TEST_PATTERN_GENERATOR_SELECTOR)
+	// Selects which test pattern generator is controlled by the test pattern feature. (XI_PRM_TEST_PATTERN_GENERATOR_SELECTOR)
 	XI_TEST_PATTERN_GENERATOR GetTestPatternGeneratorSelector();
 	XI_TEST_PATTERN_GENERATOR GetTestPatternGeneratorSelector_Maximum();
 	XI_TEST_PATTERN_GENERATOR GetTestPatternGeneratorSelector_Minimum();
@@ -411,7 +275,6 @@ public:
 	void DisableAutoExposureAutoGain();
 	 
 	// Automatic exposure/gain ROI offset X (XI_PRM_AEAG_ROI_OFFSET_X)
-	
 	int GetAutoExposureAutoGainROIoffsetX();
 	int GetAutoExposureAutoGainROIoffsetX_Maximum();
 	int GetAutoExposureAutoGainROIoffsetX_Minimum();
@@ -419,7 +282,6 @@ public:
 	void SetAutoExposureAutoGainROIoffsetX(int AutoExposureAutoGainROIoffsetX);
 	 
 	// Automatic exposure/gain ROI offset Y (XI_PRM_AEAG_ROI_OFFSET_Y)
-	
 	int GetAutoExposureAutoGainROIoffsetY();
 	int GetAutoExposureAutoGainROIoffsetY_Maximum();
 	int GetAutoExposureAutoGainROIoffsetY_Minimum();
@@ -427,7 +289,6 @@ public:
 	void SetAutoExposureAutoGainROIoffsetY(int AutoExposureAutoGainROIoffsetY);
 	 
 	// Automatic exposure/gain ROI Width (XI_PRM_AEAG_ROI_WIDTH)
-	
 	int GetAutoExposureAutoGainROIWidth();
 	int GetAutoExposureAutoGainROIWidth_Maximum();
 	int GetAutoExposureAutoGainROIWidth_Minimum();
@@ -435,7 +296,6 @@ public:
 	void SetAutoExposureAutoGainROIWidth(int AutoExposureAutoGainROIWidth);
 	 
 	// Automatic exposure/gain ROI Height (XI_PRM_AEAG_ROI_HEIGHT)
-	
 	int GetAutoExposureAutoGainROIHeight();
 	int GetAutoExposureAutoGainROIHeight_Maximum();
 	int GetAutoExposureAutoGainROIHeight_Minimum();
@@ -475,7 +335,6 @@ public:
 	void SetWhiteBalanceManualNow(int WhiteBalanceManualNow);
 	 
 	// White balance offset X (XI_PRM_WB_ROI_OFFSET_X)
-	
 	int GetWhiteBalanceROIoffsetX();
 	int GetWhiteBalanceROIoffsetX_Maximum();
 	int GetWhiteBalanceROIoffsetX_Minimum();
@@ -483,7 +342,6 @@ public:
 	void SetWhiteBalanceROIoffsetX(int WhiteBalanceROIoffsetX);
 	 
 	// White balance offset Y (XI_PRM_WB_ROI_OFFSET_Y)
-	
 	int GetWhiteBalanceROIoffsetY();
 	int GetWhiteBalanceROIoffsetY_Maximum();
 	int GetWhiteBalanceROIoffsetY_Minimum();
@@ -491,7 +349,6 @@ public:
 	void SetWhiteBalanceROIoffsetY(int WhiteBalanceROIoffsetY);
 	 
 	// White balance width (XI_PRM_WB_ROI_WIDTH)
-	
 	int GetWhiteBalanceROIWidth();
 	int GetWhiteBalanceROIWidth_Maximum();
 	int GetWhiteBalanceROIWidth_Minimum();
@@ -499,7 +356,6 @@ public:
 	void SetWhiteBalanceROIWidth(int WhiteBalanceROIWidth);
 	 
 	// White balance height (XI_PRM_WB_ROI_HEIGHT)
-	
 	int GetWhiteBalanceROIHeight();
 	int GetWhiteBalanceROIHeight_Maximum();
 	int GetWhiteBalanceROIHeight_Minimum();
@@ -534,7 +390,6 @@ public:
 	void SetWhiteBalanceBlue(float WhiteBalanceBlue);
 	 
 	// Width of the Image provided by the device (in pixels). (XI_PRM_WIDTH)
-	
 	int GetWidth();
 	int GetWidth_Maximum();
 	int GetWidth_Minimum();
@@ -542,7 +397,6 @@ public:
 	void SetWidth(int Width);
 	 
 	// Height of the Image provided by the device (in pixels). (XI_PRM_HEIGHT)
-	
 	int GetHeight();
 	int GetHeight_Maximum();
 	int GetHeight_Minimum();
@@ -550,7 +404,6 @@ public:
 	void SetHeight(int Height);
 	 
 	// Horizontal offset from the origin to the area of interest (in pixels). (XI_PRM_OFFSET_X)
-	
 	int GetOffsetX();
 	int GetOffsetX_Maximum();
 	int GetOffsetX_Minimum();
@@ -558,7 +411,6 @@ public:
 	void SetOffsetX(int OffsetX);
 	 
 	// Vertical offset from the origin to the area of interest (in pixels). (XI_PRM_OFFSET_Y)
-	
 	int GetOffsetY();
 	int GetOffsetY_Maximum();
 	int GetOffsetY_Minimum();
@@ -566,7 +418,6 @@ public:
 	void SetOffsetY(int OffsetY);
 	 
 	// Selects Region in Multiple ROI which parameters are set by width, height, ... ,region mode (XI_PRM_REGION_SELECTOR)
-	
 	int GetRegion_selector();
 	int GetRegion_selector_Maximum();
 	int GetRegion_selector_Minimum();
@@ -574,7 +425,6 @@ public:
 	void SetRegion_selector(int Region_selector);
 	 
 	// Activates/deactivates Region selected by Region Selector (XI_PRM_REGION_MODE)
-	
 	int GetRegion_mode();
 	int GetRegion_mode_Maximum();
 	int GetRegion_mode_Minimum();
@@ -594,6 +444,14 @@ public:
 	
 	void EnableVerticalFlip();
 	void DisableVerticalFlip();
+	 
+	// Selector for Exposure parameter (XI_PRM_INTERLINE_EXPOSURE_MODE)
+	XI_INTERLINE_EXPOSURE_MODE_TYPE GetInterlineExposureMode();
+	XI_INTERLINE_EXPOSURE_MODE_TYPE GetInterlineExposureMode_Maximum();
+	XI_INTERLINE_EXPOSURE_MODE_TYPE GetInterlineExposureMode_Minimum();
+	int GetInterlineExposureMode_Increment();
+	
+	void SetInterlineExposureMode(XI_INTERLINE_EXPOSURE_MODE_TYPE InterlineExposureMode);
 	 
 	// Image flat field correction (XI_PRM_FFC)
 	
@@ -637,7 +495,6 @@ public:
 	void SetBinningVerticalMode(XI_BIN_MODE BinningVerticalMode);
 	 
 	// Vertical Binning - number of vertical photo-sensitive cells to combine together. (XI_PRM_BINNING_VERTICAL)
-	
 	int GetBinningVertical();
 	int GetBinningVertical_Maximum();
 	int GetBinningVertical_Minimum();
@@ -653,7 +510,6 @@ public:
 	void SetBinningHorizontalMode(XI_BIN_MODE BinningHorizontalMode);
 	 
 	// Horizontal Binning - number of horizontal photo-sensitive cells to combine together. (XI_PRM_BINNING_HORIZONTAL)
-	
 	int GetBinningHorizontal();
 	int GetBinningHorizontal_Maximum();
 	int GetBinningHorizontal_Minimum();
@@ -685,7 +541,6 @@ public:
 	void SetDecimationSelector(XI_DEC_SELECTOR DecimationSelector);
 	 
 	// Vertical Decimation - vertical sub-sampling of the image - reduces the vertical resolution of the image by the specified vertical decimation factor. (XI_PRM_DECIMATION_VERTICAL)
-	
 	int GetDecimationVertical();
 	int GetDecimationVertical_Maximum();
 	int GetDecimationVertical_Minimum();
@@ -693,7 +548,6 @@ public:
 	void SetDecimationVertical(int DecimationVertical);
 	 
 	// Horizontal Decimation - horizontal sub-sampling of the image - reduces the horizontal resolution of the image by the specified vertical decimation factor. (XI_PRM_DECIMATION_HORIZONTAL)
-	
 	int GetDecimationHorizontal();
 	int GetDecimationHorizontal_Maximum();
 	int GetDecimationHorizontal_Minimum();
@@ -741,7 +595,6 @@ public:
 	void SetAutoGainTopLimit(float AutoGainTopLimit);
 	 
 	// Maximum time (us) used for exposure in AEAG procedure (XI_PRM_AE_MAX_LIMIT)
-	
 	int GetAutoExposureTopLimit();
 	int GetAutoExposureTopLimit_Maximum();
 	int GetAutoExposureTopLimit_Minimum();
@@ -749,7 +602,6 @@ public:
 	void SetAutoExposureTopLimit(int AutoExposureTopLimit);
 	 
 	// Average intensity of output signal AEAG should achieve(in %) (XI_PRM_AEAG_LEVEL)
-	
 	int GetAutoExposureAutoGainTargetLevel();
 	int GetAutoExposureAutoGainTargetLevel_Maximum();
 	int GetAutoExposureAutoGainTargetLevel_Minimum();
@@ -762,8 +614,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------
 
 	 
-	// Set/get bandwidth(datarate)(in Megabits) (XI_PRM_LIMIT_BANDWIDTH)
-	
+	// Set/get bandwidth(data rate in Megabits) (XI_PRM_LIMIT_BANDWIDTH)
 	int GetBandwidthLimit();
 	int GetBandwidthLimit_Maximum();
 	int GetBandwidthLimit_Minimum();
@@ -777,15 +628,6 @@ public:
 	int GetBandwidthLimitMode_Increment();
 	
 	void SetBandwidthLimitMode(XI_SWITCH BandwidthLimitMode);
-	 
-	// Image sensor line period in us (XI_PRM_SENSOR_LINE_PERIOD)
-	
-	float GetSensorLinePeriod();
-	float GetSensorLinePeriod_Maximum();
-	float GetSensorLinePeriod_Minimum();
-	float GetSensorLinePeriod_Increment();
-	
-	void SetSensorLinePeriod(float SensorLinePeriod);
 	 
 	// Sensor output data bit depth. (XI_PRM_SENSOR_DATA_BIT_DEPTH)
 	XI_BIT_DEPTH GetSensorDataBitDepth();
@@ -803,7 +645,7 @@ public:
 	
 	void SetDeviceOutputDataBitDepth(XI_BIT_DEPTH DeviceOutputDataBitDepth);
 	 
-	// bitdepth of data returned by function xiGetImage (XI_PRM_IMAGE_DATA_BIT_DEPTH)
+	// bit depth of data returned by function xiGetImage (XI_PRM_IMAGE_DATA_BIT_DEPTH)
 	XI_BIT_DEPTH GetImageDataBitDepth();
 	XI_BIT_DEPTH GetImageDataBitDepth_Maximum();
 	XI_BIT_DEPTH GetImageDataBitDepth_Minimum();
@@ -883,14 +725,14 @@ public:
 	float GetTemperatureSensor_Minimum();
 	float GetTemperatureSensor_Increment();
 	 
-	// Camera housing tepmerature (XI_PRM_HOUS_TEMP)
+	// Camera housing temperature (XI_PRM_HOUS_TEMP)
 	
 	float GetTemperatureHousing();
 	float GetTemperatureHousing_Maximum();
 	float GetTemperatureHousing_Minimum();
 	float GetTemperatureHousing_Increment();
 	 
-	// Camera housing back side tepmerature (XI_PRM_HOUS_BACK_SIDE_TEMP)
+	// Camera housing back side temperature (XI_PRM_HOUS_BACK_SIDE_TEMP)
 	
 	float GetTemperatureHousingBackSide();
 	float GetTemperatureHousingBackSide_Maximum();
@@ -990,7 +832,7 @@ public:
 	
 	void SetGammaChromaticity(float GammaChromaticity);
 	 
-	// Sharpness Strenght (XI_PRM_SHARPNESS)
+	// Sharpness strength (XI_PRM_SHARPNESS)
 	
 	float GetSharpness();
 	float GetSharpness_Maximum();
@@ -1182,7 +1024,6 @@ public:
 	void SetTriggerOverlap(XI_TRG_OVERLAP TriggerOverlap);
 	 
 	// Sets number of frames acquired by burst. This burst is used only if trigger is set to FrameBurstStart (XI_PRM_ACQ_FRAME_BURST_COUNT)
-	
 	int GetAcquisitionFrameBurstCount();
 	int GetAcquisitionFrameBurstCount_Maximum();
 	int GetAcquisitionFrameBurstCount_Minimum();
@@ -1190,11 +1031,10 @@ public:
 	void SetAcquisitionFrameBurstCount(int AcquisitionFrameBurstCount);
 	 
 	// Current value of the device timestamp counter (XI_PRM_TIMESTAMP)
-	
-	int GetTimestamp();
-	int GetTimestamp_Maximum();
-	int GetTimestamp_Minimum();
-	int GetTimestamp_Increment();
+	uint64_t GetTimestamp();
+	uint64_t GetTimestamp_Maximum();
+	uint64_t GetTimestamp_Minimum();
+	uint64_t GetTimestamp_Increment();
 
 	//-------------------------------------------------------------------------------------------------------------------
 	// ---- Parameter Group: GPIO Setup
@@ -1218,19 +1058,16 @@ public:
 	void SetGPIMode(XI_GPI_MODE GPIMode);
 	 
 	// GPI level (XI_PRM_GPI_LEVEL)
-	
 	int GetGPILevel();
 	int GetGPILevel_Maximum();
 	int GetGPILevel_Minimum();
 	int GetGPILevel_Increment(); 
 	// GPI Level at image exposure start (XI_PRM_GPI_LEVEL_AT_IMAGE_EXP_START)
-	
 	int GetGPILevelAtImageExpStart();
 	int GetGPILevelAtImageExpStart_Maximum();
 	int GetGPILevelAtImageExpStart_Minimum();
 	int GetGPILevelAtImageExpStart_Increment(); 
 	// GPI Level at image exposure end (XI_PRM_GPI_LEVEL_AT_IMAGE_EXP_END)
-	
 	int GetGPILevelAtImageExpEnd();
 	int GetGPILevelAtImageExpEnd_Maximum();
 	int GetGPILevelAtImageExpEnd_Minimum();
@@ -1281,7 +1118,6 @@ public:
 
 	 
 	// Debounce time (x * 10us) (XI_PRM_DEBOUNCE_T0)
-	
 	int GetGPIDebounceFirstEdge();
 	int GetGPIDebounceFirstEdge_Maximum();
 	int GetGPIDebounceFirstEdge_Minimum();
@@ -1289,7 +1125,6 @@ public:
 	void SetGPIDebounceFirstEdge(int GPIDebounceFirstEdge);
 	 
 	// Debounce time (x * 10us) (XI_PRM_DEBOUNCE_T1)
-	
 	int GetGPIDebounceSecondEdge();
 	int GetGPIDebounceSecondEdge_Maximum();
 	int GetGPIDebounceSecondEdge_Minimum();
@@ -1297,7 +1132,6 @@ public:
 	void SetGPIDebounceSecondEdge(int GPIDebounceSecondEdge);
 	 
 	// Debounce polarity (pol = 1 t0 - falling edge, t1 - rising edge) (XI_PRM_DEBOUNCE_POL)
-	
 	int GetGPIDebouncePolarity();
 	int GetGPIDebouncePolarity_Maximum();
 	int GetGPIDebouncePolarity_Minimum();
@@ -1327,7 +1161,6 @@ public:
 	void SetLensApertureValue(float LensApertureValue);
 	 
 	// Current aperture index as reported by lens. (XI_PRM_LENS_APERTURE_INDEX)
-	
 	int GetLensApertureIndex();
 	int GetLensApertureIndex_Maximum();
 	int GetLensApertureIndex_Minimum();
@@ -1335,7 +1168,6 @@ public:
 	void SetLensApertureIndex(int LensApertureIndex);
 	 
 	// Lens current focus movement value to be used by XI_PRM_LENS_FOCUS_MOVE in motor steps. (XI_PRM_LENS_FOCUS_MOVEMENT_VALUE)
-	
 	int GetLensFocusMovementValue();
 	int GetLensFocusMovementValue_Maximum();
 	int GetLensFocusMovementValue_Minimum();
@@ -1376,10 +1208,6 @@ public:
 	float GetLensFeature_Increment();
 	
 	void SetLensFeature(float LensFeature);
-	 
-	// Write/Read data sequences to/from lens (XI_PRM_LENS_COMM_DATA)
-	
-	void GetLensCommData(char* buffer, int buffer_lenght);
 	
 
 	//-------------------------------------------------------------------------------------------------------------------
@@ -1396,13 +1224,11 @@ public:
 	void GetCameraType(char* buffer, int buffer_lenght);
 	 
 	// Return device model id (XI_PRM_DEVICE_MODEL_ID)
-	
 	int GetModelId();
 	int GetModelId_Maximum();
 	int GetModelId_Minimum();
 	int GetModelId_Increment(); 
 	// Return device sensor model id (XI_PRM_SENSOR_MODEL_ID)
-	
 	int GetSensorId();
 	int GetSensorId_Maximum();
 	int GetSensorId_Minimum();
@@ -1414,10 +1240,6 @@ public:
 	// Return sensor serial number (XI_PRM_DEVICE_SENS_SN)
 	
 	void GetSensorSerialNumber(char* buffer, int buffer_lenght);
-	 
-	// Return unique device ID (XI_PRM_DEVICE_ID)
-	
-	void GetDeviceId(char* buffer, int buffer_lenght);
 	 
 	// Return device system instance path. (XI_PRM_DEVICE_INSTANCE_PATH)
 	
@@ -1436,7 +1258,6 @@ public:
 	void GetDeviceManifest(char* buffer, int buffer_lenght);
 	 
 	// User image data at image header to track parameters synchronization. (XI_PRM_IMAGE_USER_DATA)
-	
 	int GetImageUserData();
 	int GetImageUserData_Maximum();
 	int GetImageUserData_Minimum();
@@ -1450,7 +1271,6 @@ public:
 
 	 
 	// The alpha channel of RGB32 output image format. (XI_PRM_IMAGE_DATA_FORMAT_RGB32_ALPHA)
-	
 	int GetImageDataFormatRGB32Alpha();
 	int GetImageDataFormatRGB32Alpha_Maximum();
 	int GetImageDataFormatRGB32Alpha_Minimum();
@@ -1458,7 +1278,6 @@ public:
 	void SetImageDataFormatRGB32Alpha(int ImageDataFormatRGB32Alpha);
 	 
 	// Buffer size in bytes sufficient for output image returned by xiGetImage (XI_PRM_IMAGE_PAYLOAD_SIZE)
-	
 	int GetImagePayloadSize();
 	int GetImagePayloadSize_Maximum();
 	int GetImagePayloadSize_Minimum();
@@ -1489,7 +1308,6 @@ public:
 	void SetSensorClockFrequencyHz(float SensorClockFrequencyHz);
 	 
 	// Sensor clock frequency index. Sensor with selected frequencies have possibility to set the frequency only by this index. (XI_PRM_SENSOR_CLOCK_FREQ_INDEX)
-	
 	int GetSensorClockFrequencyIndex();
 	int GetSensorClockFrequencyIndex_Maximum();
 	int GetSensorClockFrequencyIndex_Minimum();
@@ -1522,7 +1340,6 @@ public:
 	void SetCounterSelector(XI_COUNTER_SELECTOR CounterSelector);
 	 
 	// Counter status (XI_PRM_COUNTER_VALUE)
-	
 	int GetCounterValue();
 	int GetCounterValue_Maximum();
 	int GetCounterValue_Minimum();
@@ -1536,7 +1353,6 @@ public:
 	void SetAcquisitionTimingMode(XI_ACQ_TIMING_MODE AcquisitionTimingMode);
 	 
 	// Measure and return available interface bandwidth(int Megabits) (XI_PRM_AVAILABLE_BANDWIDTH)
-	
 	int GetBandwidthAvailable();
 	int GetBandwidthAvailable_Maximum();
 	int GetBandwidthAvailable_Minimum();
@@ -1557,7 +1373,6 @@ public:
 	void DisableLookUpTable();
 	 
 	// Control the index (offset) of the coefficient to access in the LUT. (XI_PRM_LUT_INDEX)
-	
 	int GetLookUpTableIndex();
 	int GetLookUpTableIndex_Maximum();
 	int GetLookUpTableIndex_Minimum();
@@ -1565,7 +1380,6 @@ public:
 	void SetLookUpTableIndex(int LookUpTableIndex);
 	 
 	// Value at entry LUTIndex of the LUT (XI_PRM_LUT_VALUE)
-	
 	int GetLookUpTableValue();
 	int GetLookUpTableValue_Maximum();
 	int GetLookUpTableValue_Minimum();
@@ -1573,14 +1387,13 @@ public:
 	void SetLookUpTableValue(int LookUpTableValue);
 	 
 	// Specifies the delay in microseconds (us) to apply after the trigger reception before activating it. (XI_PRM_TRG_DELAY)
-	
 	int GetTriggerDelay();
 	int GetTriggerDelay_Maximum();
 	int GetTriggerDelay_Minimum();
 	int GetTriggerDelay_Increment();
 	void SetTriggerDelay(int TriggerDelay);
 	 
-	// Defines how time stamp reset engine will be armed (XI_PRM_TS_RST_MODE)
+	// Defines how TimeStamp reset engine will be armed (XI_PRM_TS_RST_MODE)
 	XI_TS_RST_MODE GetTimestampResetMode();
 	XI_TS_RST_MODE GetTimestampResetMode_Maximum();
 	XI_TS_RST_MODE GetTimestampResetMode_Minimum();
@@ -1607,7 +1420,6 @@ public:
 	bool IsExist();
 	 
 	// Acquisition buffer size in buffer_size_unit. Default bytes. (XI_PRM_ACQ_BUFFER_SIZE)
-	
 	int GetAcquisitionBufferSizeBytes();
 	int GetAcquisitionBufferSizeBytes_Maximum();
 	int GetAcquisitionBufferSizeBytes_Minimum();
@@ -1615,7 +1427,6 @@ public:
 	void SetAcquisitionBufferSizeBytes(int AcquisitionBufferSizeBytes);
 	 
 	// Acquisition buffer size unit in bytes. Default 1. E.g. Value 1024 means that buffer_size is in KiBytes (XI_PRM_ACQ_BUFFER_SIZE_UNIT)
-	
 	int GetAcquisitionBufferSizeBytesUnit();
 	int GetAcquisitionBufferSizeBytesUnit_Maximum();
 	int GetAcquisitionBufferSizeBytesUnit_Minimum();
@@ -1623,7 +1434,6 @@ public:
 	void SetAcquisitionBufferSizeBytesUnit(int AcquisitionBufferSizeBytesUnit);
 	 
 	// Acquisition transport buffer size in bytes (XI_PRM_ACQ_TRANSPORT_BUFFER_SIZE)
-	
 	int GetAcquisitionTransportBufferSizeBytes();
 	int GetAcquisitionTransportBufferSizeBytes_Maximum();
 	int GetAcquisitionTransportBufferSizeBytes_Minimum();
@@ -1631,7 +1441,6 @@ public:
 	void SetAcquisitionTransportBufferSizeBytes(int AcquisitionTransportBufferSizeBytes);
 	 
 	// Acquisition transport packet size in bytes (XI_PRM_ACQ_TRANSPORT_PACKET_SIZE)
-	
 	int GetAcquisitionTransportPacketSizeBytes();
 	int GetAcquisitionTransportPacketSizeBytes_Maximum();
 	int GetAcquisitionTransportPacketSizeBytes_Minimum();
@@ -1639,15 +1448,13 @@ public:
 	void SetAcquisitionTransportPacketSizeBytes(int AcquisitionTransportPacketSizeBytes);
 	 
 	// Queue of field/frame buffers (XI_PRM_BUFFERS_QUEUE_SIZE)
-	
 	int GetAcquisitionQueueImagesCount();
 	int GetAcquisitionQueueImagesCount_Maximum();
 	int GetAcquisitionQueueImagesCount_Minimum();
 	int GetAcquisitionQueueImagesCount_Increment();
 	void SetAcquisitionQueueImagesCount(int AcquisitionQueueImagesCount);
 	 
-	// Number of buffers to commit to low level (XI_PRM_ACQ_TRANSPORT_BUFFER_COMMIT)
-	
+	// Total number of buffers to be committed to transport layer. Increasing can enhance transport capacity. E.g. on USB (XI_PRM_ACQ_TRANSPORT_BUFFER_COMMIT)
 	int GetAcquisitionTransportBufferCommit();
 	int GetAcquisitionTransportBufferCommit_Maximum();
 	int GetAcquisitionTransportBufferCommit_Minimum();
@@ -1687,22 +1494,21 @@ public:
 	
 	void SetRowFpnCorrection(XI_SWITCH RowFpnCorrection);
 	 
-	// Select image correction function (XI_PRM_IMAGE_CORRECTION_SELECTOR)
-	XI_IMAGE_CORRECTION_SELECTOR GetImageCorrectionSelector();
-	XI_IMAGE_CORRECTION_SELECTOR GetImageCorrectionSelector_Maximum();
-	XI_IMAGE_CORRECTION_SELECTOR GetImageCorrectionSelector_Minimum();
-	int GetImageCorrectionSelector_Increment();
+	// Correction of column black offset (XI_PRM_COLUMN_BLACK_OFFSET_CORRECTION)
+	XI_SWITCH GetColumnBlackOffsetCorrection();
+	XI_SWITCH GetColumnBlackOffsetCorrection_Maximum();
+	XI_SWITCH GetColumnBlackOffsetCorrection_Minimum();
+	int GetColumnBlackOffsetCorrection_Increment();
 	
-	void SetImageCorrectionSelector(XI_IMAGE_CORRECTION_SELECTOR ImageCorrectionSelector);
+	void SetColumnBlackOffsetCorrection(XI_SWITCH ColumnBlackOffsetCorrection);
 	 
-	// Select image correction selected function value (XI_PRM_IMAGE_CORRECTION_VALUE)
+	// Correction of row black offset (XI_PRM_ROW_BLACK_OFFSET_CORRECTION)
+	XI_SWITCH GetRowBlackOffsetCorrection();
+	XI_SWITCH GetRowBlackOffsetCorrection_Maximum();
+	XI_SWITCH GetRowBlackOffsetCorrection_Minimum();
+	int GetRowBlackOffsetCorrection_Increment();
 	
-	float GetImageCorrectionValue();
-	float GetImageCorrectionValue_Maximum();
-	float GetImageCorrectionValue_Minimum();
-	float GetImageCorrectionValue_Increment();
-	
-	void SetImageCorrectionValue(float ImageCorrectionValue);
+	void SetRowBlackOffsetCorrection(XI_SWITCH RowBlackOffsetCorrection);
 	
 
 	//-------------------------------------------------------------------------------------------------------------------
@@ -1726,7 +1532,6 @@ public:
 	void DisableHDR();
 	 
 	// The number of kneepoints in the PWLR. (XI_PRM_HDR_KNEEPOINT_COUNT)
-	
 	int GetHDR_KNEEPOINT_COUNT();
 	int GetHDR_KNEEPOINT_COUNT_Maximum();
 	int GetHDR_KNEEPOINT_COUNT_Minimum();
@@ -1734,7 +1539,6 @@ public:
 	void SetHDR_KNEEPOINT_COUNT(int HDR_KNEEPOINT_COUNT);
 	 
 	// position of first kneepoint(in % of XI_PRM_EXPOSURE) (XI_PRM_HDR_T1)
-	
 	int GetHDRTimeSlope1();
 	int GetHDRTimeSlope1_Maximum();
 	int GetHDRTimeSlope1_Minimum();
@@ -1742,7 +1546,6 @@ public:
 	void SetHDRTimeSlope1(int HDRTimeSlope1);
 	 
 	// position of second kneepoint (in % of XI_PRM_EXPOSURE) (XI_PRM_HDR_T2)
-	
 	int GetHDRTimeSlope2();
 	int GetHDRTimeSlope2_Maximum();
 	int GetHDRTimeSlope2_Minimum();
@@ -1750,7 +1553,6 @@ public:
 	void SetHDRTimeSlope2(int HDRTimeSlope2);
 	 
 	// value of first kneepoint (% of sensor saturation) (XI_PRM_KNEEPOINT1)
-	
 	int GetHDRKnee1Percent();
 	int GetHDRKnee1Percent_Maximum();
 	int GetHDRKnee1Percent_Minimum();
@@ -1758,26 +1560,42 @@ public:
 	void SetHDRKnee1Percent(int HDRKnee1Percent);
 	 
 	// value of second kneepoint (% of sensor saturation) (XI_PRM_KNEEPOINT2)
-	
 	int GetHDRKnee2Percent();
 	int GetHDRKnee2Percent_Maximum();
 	int GetHDRKnee2Percent_Minimum();
 	int GetHDRKnee2Percent_Increment();
 	void SetHDRKnee2Percent(int HDRKnee2Percent);
 	 
-	// Last image black level counts. Can be used for Offline processing to recall it. (XI_PRM_IMAGE_BLACK_LEVEL)
-	
+	// Last image black level counts (same as in XI_IMG). Setting can be used only for Offline Processing. (XI_PRM_IMAGE_BLACK_LEVEL)
 	int GetImageBlackLevel();
 	int GetImageBlackLevel_Maximum();
 	int GetImageBlackLevel_Minimum();
-	int GetImageBlackLevel_Increment();
-	void SetImageBlackLevel(int ImageBlackLevel);
+	int GetImageBlackLevel_Increment(); 
+	// Defines image area of sensor as output. (XI_PRM_IMAGE_AREA)
+	XI_IMAGE_AREA_SELECTOR GetImageArea();
+	XI_IMAGE_AREA_SELECTOR GetImageArea_Maximum();
+	XI_IMAGE_AREA_SELECTOR GetImageArea_Minimum();
+	int GetImageArea_Increment();
+	
+	void SetImageArea(XI_IMAGE_AREA_SELECTOR ImageArea);
 	
 
 	//-------------------------------------------------------------------------------------------------------------------
 	// ---- Parameter Group: Version info
 	//-------------------------------------------------------------------------------------------------------------------
 
+	 
+	// Selects module/unit, which version we get. (XI_PRM_VERSION_SELECTOR)
+	XI_VERSION GetVersionSelector();
+	XI_VERSION GetVersionSelector_Maximum();
+	XI_VERSION GetVersionSelector_Minimum();
+	int GetVersionSelector_Increment();
+	
+	void SetVersionSelector(XI_VERSION VersionSelector);
+	 
+	// Returns version of selected module/unit(XI_PRM_VERSION_SELECTOR). (XI_PRM_VERSION)
+	
+	void GetVersion(char* buffer, int buffer_lenght);
 	 
 	// Returns version of API. (XI_PRM_API_VERSION)
 	
@@ -1799,7 +1617,7 @@ public:
 	
 	void GetVersionMCU3(char* buffer, int buffer_lenght);
 	 
-	// Returns version of FPGA1 firmware. (XI_PRM_FPGA1_VERSION)
+	// Returns version of FPGA firmware currently running. (XI_PRM_FPGA1_VERSION)
 	
 	void GetVersionFPGA1(char* buffer, int buffer_lenght);
 	 
@@ -1810,6 +1628,10 @@ public:
 	// Returns hardware revision number. (XI_PRM_HW_REVISION)
 	
 	void GetHWRevision(char* buffer, int buffer_lenght);
+	 
+	// Returns version of factory set. (XI_PRM_FACTORY_SET_VERSION)
+	
+	void GetVersionFactSet(char* buffer, int buffer_lenght);
 	
 
 	//-------------------------------------------------------------------------------------------------------------------
@@ -1839,50 +1661,12 @@ public:
 	void EnableNewProcessChainEnable();
 	void DisableNewProcessChainEnable();
 	 
-	// Enable enumeration of golden devices (XI_PRM_CAM_ENUM_GOLDEN_ENABLED)
-	
-	bool IsCamEnumGoldenEnabled();
-	
-	void EnableCamEnumGoldenEnabled();
-	void DisableCamEnumGoldenEnabled();
-	 
-	// Resets USB device if started as bootloader (XI_PRM_RESET_USB_IF_BOOTLOADER)
-	
-	bool IsResetUSBIfBootloader();
-	
-	void EnableResetUSBIfBootloader();
-	void DisableResetUSBIfBootloader();
-	 
-	// Number of camera simulators to be available. (XI_PRM_CAM_SIMULATORS_COUNT)
-	
-	int GetCameraSimulatorsCount();
-	int GetCameraSimulatorsCount_Maximum();
-	int GetCameraSimulatorsCount_Minimum();
-	int GetCameraSimulatorsCount_Increment();
-	void SetCameraSimulatorsCount(int CameraSimulatorsCount);
-	 
-	// Camera sensor will not be initialized when 1=XI_ON is set. (XI_PRM_CAM_SENSOR_INIT_DISABLED)
-	
-	bool IsCameraSensorInitDisabled();
-	
-	void EnableCameraSensorInitDisabled();
-	void DisableCameraSensorInitDisabled();
-	 
 	// Number of threads per image processor (XI_PRM_PROC_NUM_THREADS)
-	
 	int GetProcessorNumberThreads();
 	int GetProcessorNumberThreads_Maximum();
 	int GetProcessorNumberThreads_Minimum();
 	int GetProcessorNumberThreads_Increment();
 	void SetProcessorNumberThreads(int ProcessorNumberThreads);
-	 
-	// Set processing engine (XI_PRM_PROC_ENGINE)
-	XI_PROC_ENGINE GetProcessingEngine();
-	XI_PROC_ENGINE GetProcessingEngine_Maximum();
-	XI_PROC_ENGINE GetProcessingEngine_Minimum();
-	int GetProcessingEngine_Increment();
-	
-	void SetProcessingEngine(XI_PROC_ENGINE ProcessingEngine);
 	
 
 	//-------------------------------------------------------------------------------------------------------------------
@@ -1907,31 +1691,26 @@ public:
 	void SetFFSFileName(char* FFSFileName);
 	 
 	// File number. (XI_PRM_FFS_FILE_ID)
-	
 	int GetFFSFileId();
 	int GetFFSFileId_Maximum();
 	int GetFFSFileId_Minimum();
 	int GetFFSFileId_Increment(); 
 	// Size of file. (XI_PRM_FFS_FILE_SIZE)
-	
 	int GetFFSFileSize();
 	int GetFFSFileSize_Maximum();
 	int GetFFSFileSize_Minimum();
 	int GetFFSFileSize_Increment(); 
 	// Size of free camera FFS. (XI_PRM_FREE_FFS_SIZE)
-	
-	int GetFreeFFSSize();
-	int GetFreeFFSSize_Maximum();
-	int GetFreeFFSSize_Minimum();
-	int GetFreeFFSSize_Increment(); 
+	uint64_t GetFreeFFSSize();
+	uint64_t GetFreeFFSSize_Maximum();
+	uint64_t GetFreeFFSSize_Minimum();
+	uint64_t GetFreeFFSSize_Increment(); 
 	// Size of used camera FFS. (XI_PRM_USED_FFS_SIZE)
-	
-	int GetUsedFFSSize();
-	int GetUsedFFSSize_Maximum();
-	int GetUsedFFSSize_Minimum();
-	int GetUsedFFSSize_Increment(); 
+	uint64_t GetUsedFFSSize();
+	uint64_t GetUsedFFSSize_Maximum();
+	uint64_t GetUsedFFSSize_Minimum();
+	uint64_t GetUsedFFSSize_Increment(); 
 	// Setting of key enables file operations on some cameras. (XI_PRM_FFS_ACCESS_KEY)
-	
 	int GetFFSAccessKey();
 	int GetFFSAccessKey_Maximum();
 	int GetFFSAccessKey_Minimum();
@@ -1965,7 +1744,6 @@ public:
 	void SetSensorFeatureSelector(XI_SENSOR_FEATURE_SELECTOR SensorFeatureSelector);
 	 
 	// Allows access to sensor feature value currently selected by XI_PRM_SENSOR_FEATURE_SELECTOR. (XI_PRM_SENSOR_FEATURE_VALUE)
-	
 	int GetSensorFeatureValue();
 	int GetSensorFeatureValue_Maximum();
 	int GetSensorFeatureValue_Minimum();
@@ -1977,52 +1755,6 @@ public:
 	// ---- Parameter Group: Extended Features
 	//-------------------------------------------------------------------------------------------------------------------
 
-	 
-	// Selection of extended feature. (XI_PRM_EXTENDED_FEATURE_SELECTOR)
-	XI_EXT_FEATURE_SELECTOR GetExtendedFeatureSelector();
-	XI_EXT_FEATURE_SELECTOR GetExtendedFeatureSelector_Maximum();
-	XI_EXT_FEATURE_SELECTOR GetExtendedFeatureSelector_Minimum();
-	int GetExtendedFeatureSelector_Increment();
-	
-	void SetExtendedFeatureSelector(XI_EXT_FEATURE_SELECTOR ExtendedFeatureSelector);
-	 
-	// Extended feature value. (XI_PRM_EXTENDED_FEATURE)
-	
-	int GetExtendedFeature();
-	int GetExtendedFeature_Maximum();
-	int GetExtendedFeature_Minimum();
-	int GetExtendedFeature_Increment();
-	void SetExtendedFeature(int ExtendedFeature);
-	 
-	// Selects device unit. (XI_PRM_DEVICE_UNIT_SELECTOR)
-	XI_DEVICE_UNIT_SELECTOR GetDeviceUnitSelector();
-	XI_DEVICE_UNIT_SELECTOR GetDeviceUnitSelector_Maximum();
-	XI_DEVICE_UNIT_SELECTOR GetDeviceUnitSelector_Minimum();
-	int GetDeviceUnitSelector_Increment();
-	
-	void SetDeviceUnitSelector(XI_DEVICE_UNIT_SELECTOR DeviceUnitSelector);
-	 
-	// Selects register of selected device unit(XI_PRM_DEVICE_UNIT_SELECTOR). (XI_PRM_DEVICE_UNIT_REGISTER_SELECTOR)
-	
-	int GetDeviceUnitRegisterSelector();
-	int GetDeviceUnitRegisterSelector_Maximum();
-	int GetDeviceUnitRegisterSelector_Minimum();
-	int GetDeviceUnitRegisterSelector_Increment();
-	void SetDeviceUnitRegisterSelector(int DeviceUnitRegisterSelector);
-	 
-	// Sets/gets register value of selected device unit(XI_PRM_DEVICE_UNIT_SELECTOR). (XI_PRM_DEVICE_UNIT_REGISTER_VALUE)
-	
-	int GetDeviceUnitRegister();
-	int GetDeviceUnitRegister_Maximum();
-	int GetDeviceUnitRegister_Minimum();
-	int GetDeviceUnitRegister_Increment();
-	void SetDeviceUnitRegister(int DeviceUnitRegister);
-	 
-	// Callback address of pointer that is called upon long tasks (e.g. XI_PRM_WRITE_FILE_FFS). (XI_PRM_API_PROGRESS_CALLBACK)
-	
-	void GetApiProgressCallback(char* buffer, int buffer_lenght);
-	
-	void SetApiProgressCallback(char* ApiProgressCallback);
 	 
 	// Selects the internal acquisition signal to read using XI_PRM_ACQUISITION_STATUS. (XI_PRM_ACQUISITION_STATUS_SELECTOR)
 	XI_ACQUISITION_STATUS_SELECTOR GetAcquisitionStatusSelector();
@@ -2081,6 +1813,32 @@ public:
 	// Get GenTL stream context pointer for low level streaming (XI_PRM_GENTL_DATASTREAM_CONTEXT)
 	
 	void GetGenTLStreamContext(char* buffer, int buffer_lenght);
+	
+
+	//-------------------------------------------------------------------------------------------------------------------
+	// ---- Parameter Group: User Set Control
+	//-------------------------------------------------------------------------------------------------------------------
+
+	 
+	// Selects the feature User Set to load, save or configure. (XI_PRM_USER_SET_SELECTOR)
+	XI_USER_SET_SELECTOR GetUserSetSelector();
+	XI_USER_SET_SELECTOR GetUserSetSelector_Maximum();
+	XI_USER_SET_SELECTOR GetUserSetSelector_Minimum();
+	int GetUserSetSelector_Increment();
+	
+	void SetUserSetSelector(XI_USER_SET_SELECTOR UserSetSelector);
+	 
+	// Loads the User Set specified by User Set Selector to the device and makes it active. (XI_PRM_USER_SET_LOAD)
+	
+	void SetUserSetLoad(int UserSetLoad);
+	 
+	// Selects the feature User Set to load and make active by default when the device is reset. Change might affect default mode in other applications, e.g. CamTool. (XI_PRM_USER_SET_DEFAULT)
+	XI_USER_SET_SELECTOR GetUserSetDefault();
+	XI_USER_SET_SELECTOR GetUserSetDefault_Maximum();
+	XI_USER_SET_SELECTOR GetUserSetDefault_Minimum();
+	int GetUserSetDefault_Increment();
+	
+	void SetUserSetDefault(XI_USER_SET_SELECTOR UserSetDefault);
 	
 
 
@@ -2159,21 +1917,10 @@ public:
 	*/
 	virtual ~xiAPIplusCameraOcv();
 	/**
-	* Reads an image from the camera using XiAPI, stores the image in OpenCV format.
-	* @return OpenCV IpliImage* image. 
-	*/
-	IplImage *	GetNextImageOcvIpl(); //Reads and image and converts it to OpenCV IplImage
-	/**
 	* Reads an image from the camera using XiAPI, stores the image in OpenCV Mat format.
 	* @return OpenCV Mat image. 
 	*/
-	cv::Mat			GetNextImageOcvMat(); //Reads and image and converts it to OpenCV Mat
-	/**
-	* Converts a XiAPI image (xiAPIplus_Image*) to OpenCV IplImage *.
-	* @param input_image[in] Input xiAPIplus_Image* to be converted.
-	* @return converted OpenCV IpliImage* image. 
-	*/
-	IplImage *	ConvertOcvIpl(xiAPIplus_Image * input_image); //Converts an image to OpenCV IplImage
+	cv::Mat			GetNextImageOcvMat(); //Reads an image and converts it to OpenCV Mat
 	/**
 	* Converts a XiAPI image (xiAPIplus_Image*) to OpenCV Mat.
 	* @param input_image[in] Input xiAPIplus_Image* to be converted.
@@ -2185,16 +1932,12 @@ public:
     private:
 	
 	/**
-	* Resets the Opencv image if properties of XI_IMG have changed. Resets the cv_image_.
+	* Resets the Opencv image if properties of XI_IMG have changed. Resets the cv_mat_image_.
 	*/
     void resetCvImage_();				//Resets the OpenCV image properties if XI_IMG format has changed
-	IplImage *			cv_image_; 
 	cv::Mat 				cv_mat_image_;
 	xiAPIplus_Image *	next_image_;      
 	int					timeout_;
 	int				counter_;
 	int				index_;
-
-	
 };
-
