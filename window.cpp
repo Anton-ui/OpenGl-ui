@@ -66,15 +66,14 @@ void window::CaptureImage()
             //pixmap_vector[var].loadFromData(cam_vector[var].GetUcharImage());
 
             mat_vector[var] = cam_vector[var].GetMatImage();
-
-            app.TakePicture1(mat_vector[var]);
-            app.updateGL();
-
             pixmap_vector[var] = Mat2Pixmap(mat_vector[var]);
             view_vector[var]->scene()->clear();
             view_vector[var]->scene()->addPixmap(pixmap_vector[var]);
             view_vector[var]->setScene(scene_vector[var]);
             view_vector[var]->fitInView(pixmap_vector[var].rect(), Qt::KeepAspectRatio);
+
+            app.TakePicture1(mat_vector[var]);
+            app.updateGL();
         }
 }
 
