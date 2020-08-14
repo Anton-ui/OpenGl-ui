@@ -11,17 +11,18 @@ opengl_window::opengl_window()
     initialize_page_data();
 
     // Заполнение переменной состояния
-    STATE_LIST.resize(4);
+    STATE_LIST.resize(5);
     STATE_LIST[0] = true;
     STATE_LIST[1] = false;
     STATE_LIST[2] = false;
     STATE_LIST[3] = false;
 
-    state_list.resize(4);
-    state_list[0].resize(P1);
-    state_list[1].resize(P2);
-    state_list[2].resize(P3);
-    state_list[3].resize(P4);
+    state_list.resize(5);
+    state_list[0].resize(P_1);
+    state_list[1].resize(P_2);
+    state_list[2].resize(P_3);
+    state_list[3].resize(P_4);
+    state_list[4].resize(1);
 
     state_list[0][0] = true;
     state_list[0][1] = false;
@@ -40,10 +41,10 @@ opengl_window::opengl_window()
     state_list[3][3] = false;
 
     // Создание векторов текущих настроек
-    page1.vector_page_settings.resize(P1);
-    page2.vector_page_settings.resize(P2);
-    page3.vector_page_settings.resize(P3);
-    page4.vector_page_settings.resize(P4);
+    page1.vector_page_settings.resize(P_1);
+    page2.vector_page_settings.resize(P_2);
+    page3.vector_page_settings.resize(P_3);
+    page4.vector_page_settings.resize(P_4);
 
     load();
 
@@ -65,7 +66,7 @@ void opengl_window::initializeGL()
   glEnable(GL_POINT_SMOOTH);
   glEnable(GL_SMOOTH);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  //glEnable(GL_TEXTURE_2D);
+  glEnable(GL_TEXTURE_2D);
 }
 
 void opengl_window::resizeGL(int aW, int aH)
@@ -187,12 +188,12 @@ void opengl_window::initialize_page_data()
 {
     // Заполнение полей настроек
     // Page 1
-    page1.vector_page_key.resize(P1);
+    page1.vector_page_key.resize(P_1);
     page1.vector_page_key[0] = "Вкл/Выкл";
     page1.vector_page_key[1] = "Формат";
     page1.vector_page_key[2] = "Сжатие";
 
-    page1.vector_page_value.resize(P1);
+    page1.vector_page_value.resize(P_1);
 
     page1.vector_page_value[0].resize(2);
     page1.vector_page_value[0][0] = "Вкл";
@@ -208,12 +209,12 @@ void opengl_window::initialize_page_data()
     page1.vector_page_value[2][2] = "50%";
 
     // Page 2
-    page2.vector_page_key.resize(P2);
+    page2.vector_page_key.resize(P_2);
     page2.vector_page_key[0] = "Вкл/Выкл";
     page2.vector_page_key[1] = "Формат";
     page2.vector_page_key[2] = "Сжатие";
 
-    page2.vector_page_value.resize(P2);
+    page2.vector_page_value.resize(P_2);
 
     page2.vector_page_value[0].resize(2);
     page2.vector_page_value[0][0] = "Вкл";
@@ -229,11 +230,11 @@ void opengl_window::initialize_page_data()
     page2.vector_page_value[2][2] = "50%";
 
     // Page 3
-    page3.vector_page_key.resize(P3);
+    page3.vector_page_key.resize(P_3);
     page3.vector_page_key[0] = "Вкл/Выкл";
     page3.vector_page_key[1] = "Диапазон";
 
-    page3.vector_page_value.resize(P3);
+    page3.vector_page_value.resize(P_3);
 
     page3.vector_page_value[0].resize(2);
     page3.vector_page_value[0][0] = "Вкл";
@@ -245,13 +246,13 @@ void opengl_window::initialize_page_data()
     page3.vector_page_value[1][2] = ">0.1 МэВ";
 
     // Page 4
-    page4.vector_page_key.resize(P4);
+    page4.vector_page_key.resize(P_4);
     page4.vector_page_key[0] = "Вкл/Выкл";
     page4.vector_page_key[1] = "Диапазон";
     page4.vector_page_key[2] = "Приближение";
     page4.vector_page_key[3] = "Угол";
 
-    page4.vector_page_value.resize(P4);
+    page4.vector_page_value.resize(P_4);
 
     page4.vector_page_value[0].resize(2);
     page4.vector_page_value[0][0] = "Вкл";
@@ -283,6 +284,8 @@ void opengl_window::draw_start_process_pages()
         process_page3();
     else if (STATE_LIST[3])
         process_page4();
+    else if (STATE_LIST[4])
+        process_page5();
 }
 
 void opengl_window::process_page1()
@@ -401,6 +404,41 @@ void opengl_window::process_page4()
     }
 }
 
+void opengl_window::process_page5()
+{
+    x = 20;
+    y = 30;
+
+    qglColor(Qt::gray);
+    renderText(x, y, "Page 5", font);
+    y += 40;
+
+    if(Image.empty())
+        qDebug() << "Image is unavailable. Connect camera";
+    else
+    {
+        cv::flip(Image, Image, 0);
+        glGenTextures(1, &Texture1);
+        glBindTexture(GL_TEXTURE_2D, Texture1);
+
+        GLint internalformat = GL_RGB32F;
+                    if (Image.channels() == 4) internalformat = GL_RGBA;
+                    if (Image.channels() == 3) internalformat = GL_RGB;
+                    if (Image.channels() == 2) internalformat = GL_RG;
+                    if (Image.channels() == 1) internalformat = GL_RED;
+        GLenum externalformat = GL_BGR;
+                    if (Image.channels() == 1) externalformat = GL_RED; // GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT32F, GL_R32F NOT WORKING!
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, Image.cols, Image.rows, 0, externalformat, GL_SHORT, Image.ptr());
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+        drawTexture(QRectF{float(x), float(y), float(x+740), float(y+440)}, Texture1);
+        }
+}
 void opengl_window::load()
 {
     QFile file("settings.txt");
@@ -479,4 +517,11 @@ void opengl_window::save()
         file.close();
     }
     else qDebug() << "Save data error!";
+}
+
+void opengl_window::TakePicture1(Mat InputImage)
+{
+    //Image = InputImage;
+    Image = imread ("/home/camel212/Downloads/cup.png", CV_LOAD_IMAGE_COLOR);
+
 }

@@ -5,10 +5,14 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-#define P1 3
-#define P2 3
-#define P3 2
-#define P4 4
+//---Нужно подключать для использования текстур в OpenGL---
+#include "Ximea/cameraclass.h"
+//---------------------------------------------------------
+
+#define P_1 3
+#define P_2 3
+#define P_3 2
+#define P_4 4
 
 struct vector_page
 {
@@ -26,6 +30,8 @@ struct opengl_window : QGLWidget
     void paintGL()                    override;
     void keyReleaseEvent(QKeyEvent *) override;
 
+    void TakePicture1(Mat InputImage);
+
 private:
     void initialize_page_data();
     void draw_start_process_pages();
@@ -33,6 +39,7 @@ private:
     void process_page2();
     void process_page3();
     void process_page4();
+    void process_page5();
     void load();
     void save();
     vector_page page1;
@@ -51,6 +58,9 @@ private:
     int x = 20;
     int y = 40;
     const int dy = 50;
+
+    GLuint Texture1;
+    cv::Mat Image;
 };
 
 #endif // OPENGL_WINDOW_H
