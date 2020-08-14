@@ -11,8 +11,8 @@
 #include "Ximea/cv_qt_converter.h"
 #include "Ximea/cameraclass.h"
 
-using namespace std;
 using namespace cv;
+using namespace std;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class window; }

@@ -135,7 +135,7 @@ void XimeaCamera::ChangeExposure(int exp_value)
      catch (xiAPIplus_Exception& exp)
      {
          printf("Error XimeaCamera::ChangeExposure:\n");
-                 exp.PrintError();
+         exp.PrintError();
      }
  }
 

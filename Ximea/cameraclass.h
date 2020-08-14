@@ -14,12 +14,6 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/videoio.hpp"
 #include "opencv2/core.hpp"
-#include "opencv2/objdetect.hpp"
-#include "opencv2/features2d.hpp"
-#include "opencv2/xfeatures2d.hpp"
-
-
-#include "opencv2/features2d/features2d.hpp"
 
 using namespace cv;
 

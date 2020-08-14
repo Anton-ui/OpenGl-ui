@@ -1,10 +1,10 @@
 #ifndef CV_QT_CONVERTER_H
 #define CV_QT_CONVERTER_H
 
-#include <QDebug>
 #include <QImage>
 #include <QPixmap>
 #include <QtGlobal>
+#include <QDebug>
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/imgproc/types_c.h"
